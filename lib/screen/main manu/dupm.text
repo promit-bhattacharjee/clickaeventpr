@@ -1,0 +1,746 @@
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import '../widgets/bodyBackground.dart';
+
+// class Transaction {
+//   final String title;
+//   final double amount;
+//   final String eventDocId;
+
+//   Transaction(this.title, this.amount, this.eventDocId);
+// }
+
+// class BudgetPage extends StatefulWidget {
+//   @override
+//   _BudgetPageState createState() => _BudgetPageState();
+// }
+
+// class _BudgetPageState extends State<BudgetPage> {
+//   final List<Transaction> _transactions = [];
+//   final titleController = TextEditingController();
+//   final amountController = TextEditingController();
+//   String? _selectedEvent;
+//   double _totalSpent = 0.0;
+//   double _eventBudget = 0.0;
+//   final List<String> _events = [];
+//   String? _selectedEventDocId;
+//   bool _isLoading = false;
+//   bool _isEventLoaded = false; // Flag to check if events are loaded
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadEvents();
+//   }
+
+//   Future<void> _loadEvents() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     try {
+//       final snapshot = await FirebaseFirestore.instance
+//           .collection('events')
+//           .where('status', isEqualTo: 'active')
+//           .get();
+//       final List<String> events = [];
+
+//       snapshot.docs.forEach((doc) {
+//         if (doc['type'] != null) {
+//           events.add(doc['type']);
+//         }
+//       });
+
+//       setState(() {
+//         _events.addAll(events);
+//         _isEventLoaded = true; // Mark events as loaded
+//       });
+//     } catch (error) {
+//       print("Error loading events: $error");
+//     } finally {
+//       setState(() {
+//         _isLoading = false;
+//       });
+//     }
+//   }
+
+//   Future<void> _loadEventBudget(String eventType) async {
+//     if (!_isEventLoaded) return; // Ensure events are loaded
+
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     try {
+//       String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//       final snapshot = await FirebaseFirestore.instance
+//           .collection('events')
+//           .where('type', isEqualTo: eventType)
+//           .where('email', isEqualTo: userEmail)
+//           .get();
+
+//       if (snapshot.docs.isNotEmpty) {
+//         final eventDoc = snapshot.docs.first;
+//         setState(() {
+//           _eventBudget = eventDoc.data()['budget']?.toDouble() ?? 0.0;
+//           _selectedEventDocId = eventDoc.id;
+//         });
+//         _loadTransactions(); // Load transactions after setting event budget
+//       } else {
+//         setState(() {
+//           _eventBudget = 0.0;
+//           _selectedEventDocId = null;
+//         });
+//       }
+//     } catch (error) {
+//       print("Error loading event budget: $error");
+//     } finally {
+//       setState(() {
+//         _isLoading = false;
+//       });
+//     }
+//   }
+
+//   Future<void> _addTransaction(String title, double amount) async {
+//     if (_selectedEventDocId == null) {
+//       return;
+//     }
+
+//     final newTransaction = Transaction(title, amount, _selectedEventDocId!);
+
+//     setState(() {
+//       _transactions.add(newTransaction);
+//       _calculateTotalSpent();
+//     });
+
+//     try {
+//       String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//       await FirebaseFirestore.instance.collection('transactions').add({
+//         'title': newTransaction.title,
+//         'amount': newTransaction.amount,
+//         'createdAt': Timestamp.now(),
+//         'email': userEmail,
+//         'eventType': _selectedEvent,
+//         'eventDocId': newTransaction.eventDocId,
+//       });
+
+//       if (_selectedEventDocId != null) {
+//         await _updateEventBudget(_selectedEventDocId!, newTransaction.amount);
+//       }
+//     } catch (error) {
+//       print("Error adding transaction: $error");
+//     }
+//   }
+
+//   Future<void> _updateEventBudget(
+//       String eventDocId, double transactionAmount) async {
+//     String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//     try {
+//       final eventDoc = await FirebaseFirestore.instance
+//           .collection('events')
+//           .doc(eventDocId)
+//           .get();
+
+//       final newBudget =
+//           (eventDoc.data()?['budget']?.toDouble() ?? 0.0) - transactionAmount;
+
+//       await FirebaseFirestore.instance
+//           .collection('events')
+//           .doc(eventDocId)
+//           .update({
+//         'budget': newBudget,
+//       });
+
+//       setState(() {
+//         _eventBudget = newBudget;
+//       });
+//     } catch (error) {
+//       print("Error updating event budget: $error");
+//     }
+//   }
+
+//   Future<void> _loadTransactions() async {
+//     if (_selectedEventDocId == null) return;
+
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//     FirebaseFirestore.instance
+//         .collection('transactions')
+//         .where('email', isEqualTo: userEmail)
+//         .where('eventType', isEqualTo: _selectedEvent)
+//         .where('eventDocId', isEqualTo: _selectedEventDocId)
+//         .snapshots()
+//         .listen((snapshot) {
+//       final List<Transaction> loadedTransactions = [];
+
+//       snapshot.docs.forEach((doc) {
+//         loadedTransactions.add(
+//           Transaction(
+//             doc['title'],
+//             doc['amount'].toDouble(),
+//             doc['eventDocId'],
+//           ),
+//         );
+//       });
+
+//       setState(() {
+//         _transactions.clear();
+//         _transactions.addAll(loadedTransactions);
+//         _calculateTotalSpent();
+//         _isLoading = false;
+//       });
+//     });
+//   }
+
+//   void _calculateTotalSpent() {
+//     setState(() {
+//       _totalSpent = _transactions.fold(0.0, (sum, item) => sum + item.amount);
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Colors.red,
+//         title: Text('Budget Page'),
+//         centerTitle: true,
+//       ),
+//       body: BodyBackground(
+//         child: Stack(
+//           children: [
+//             Column(
+//               crossAxisAlignment: CrossAxisAlignment.stretch,
+//               children: <Widget>[
+//                 if (_isLoading && _events.isEmpty)
+//                   Center(
+//                     child: CircularProgressIndicator(),
+//                   ),
+//                 if (!_isLoading && _events.isNotEmpty)
+//                   DropdownButton<String>(
+//                     hint: Text('Select Event'),
+//                     value: _selectedEvent,
+//                     items: _events.map((event) {
+//                       return DropdownMenuItem<String>(
+//                         value: event,
+//                         child: Text(event),
+//                       );
+//                     }).toList(),
+//                     onChanged: (newValue) {
+//                       setState(() {
+//                         _selectedEvent = newValue;
+//                         if (newValue != null) {
+//                           _loadEventBudget(newValue); // Load event budget
+//                         }
+//                       });
+//                     },
+//                   ),
+//                 SizedBox(height: 20),
+//                 Card(
+//                   elevation: 5,
+//                   child: Container(
+//                     padding: EdgeInsets.all(10),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           'Total Spending: \$${_totalSpent.toStringAsFixed(2)}',
+//                           style: TextStyle(
+//                               fontSize: 20, fontWeight: FontWeight.bold),
+//                         ),
+//                         SizedBox(height: 10),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(height: 20),
+//                 Expanded(
+//                   child: ListView.builder(
+//                     itemCount: _transactions.length,
+//                     itemBuilder: (ctx, index) {
+//                       return Card(
+//                         elevation: 3,
+//                         margin:
+//                             EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+//                         child: ListTile(
+//                           leading: CircleAvatar(
+//                             radius: 30,
+//                             child: Padding(
+//                               padding: EdgeInsets.all(6),
+//                               child: FittedBox(
+//                                 child: Text('\$${_transactions[index].amount}'),
+//                               ),
+//                             ),
+//                           ),
+//                           title: Text(
+//                             _transactions[index].title,
+//                             style: TextStyle(fontWeight: FontWeight.bold),
+//                           ),
+//                           subtitle: Text(
+//                             'Spent on: ${_transactions[index].title}',
+//                           ),
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             if (_isLoading && _events.isNotEmpty)
+//               Center(
+//                 child: CircularProgressIndicator(),
+//               ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () => _startAddNewTransaction(context),
+//         child: Icon(Icons.add),
+//       ),
+//     );
+//   }
+
+//   void _startAddNewTransaction(BuildContext ctx) {
+//     showModalBottomSheet(
+//       context: ctx,
+//       builder: (context) {
+//         return Padding(
+//           padding: EdgeInsets.all(10),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.end,
+//             children: [
+//               TextField(
+//                 controller: titleController,
+//                 decoration: InputDecoration(labelText: 'Title'),
+//               ),
+//               TextField(
+//                 controller: amountController,
+//                 decoration: InputDecoration(labelText: 'Amount'),
+//                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+//               ),
+//               SizedBox(height: 20),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   final title = titleController.text;
+//                   final amount = double.tryParse(amountController.text) ?? 0.0;
+
+//                   if (title.isEmpty ||
+//                       amount <= 0.0 ||
+//                       _selectedEvent == null) {
+//                     return;
+//                   }
+
+//                   _addTransaction(title, amount);
+//                   Navigator.of(ctx).pop();
+//                 },
+//                 child: Text('Add Transaction'),
+//               )
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import '../widgets/bodyBackground.dart';
+
+// class Transaction {
+//   final String id; // Added id field for deletion
+//   final String title;
+//   final double amount;
+//   final String eventDocId;
+
+//   Transaction(this.id, this.title, this.amount, this.eventDocId);
+// }
+
+// class BudgetPage extends StatefulWidget {
+//   @override
+//   _BudgetPageState createState() => _BudgetPageState();
+// }
+
+// class _BudgetPageState extends State<BudgetPage> {
+//   final List<Transaction> _transactions = [];
+//   final titleController = TextEditingController();
+//   final amountController = TextEditingController();
+//   String? _selectedEvent;
+//   double _totalSpent = 0.0;
+//   double _eventBudget = 0.0;
+//   final List<String> _events = [];
+//   String? _selectedEventDocId;
+//   bool _isLoading = false;
+//   bool _isEventLoaded = false; // Flag to check if events are loaded
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadEvents();
+//   }
+
+//   Future<void> _loadEvents() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     try {
+//       final snapshot = await FirebaseFirestore.instance
+//           .collection('events')
+//           .where('status', isEqualTo: 'active')
+//           .get();
+//       final List<String> events = [];
+
+//       snapshot.docs.forEach((doc) {
+//         if (doc['type'] != null) {
+//           events.add(doc['type']);
+//         }
+//       });
+
+//       setState(() {
+//         _events.addAll(events);
+//         _isEventLoaded = true; // Mark events as loaded
+//       });
+//     } catch (error) {
+//       print("Error loading events: $error");
+//     } finally {
+//       setState(() {
+//         _isLoading = false;
+//       });
+//     }
+//   }
+
+//   Future<void> _loadEventBudget(String eventType) async {
+//     if (!_isEventLoaded) return; // Ensure events are loaded
+
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     try {
+//       String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//       final snapshot = await FirebaseFirestore.instance
+//           .collection('events')
+//           .where('type', isEqualTo: eventType)
+//           .where('email', isEqualTo: userEmail)
+//           .get();
+
+//       if (snapshot.docs.isNotEmpty) {
+//         final eventDoc = snapshot.docs.first;
+//         setState(() {
+//           _eventBudget = eventDoc.data()['budget']?.toDouble() ?? 0.0;
+//           _selectedEventDocId = eventDoc.id;
+//         });
+//         _loadTransactions(); // Load transactions after setting event budget
+//       } else {
+//         setState(() {
+//           _eventBudget = 0.0;
+//           _selectedEventDocId = null;
+//         });
+//       }
+//     } catch (error) {
+//       print("Error loading event budget: $error");
+//     } finally {
+//       setState(() {
+//         _isLoading = false;
+//       });
+//     }
+//   }
+
+//   Future<void> _addTransaction(String title, double amount) async {
+//     if (_selectedEventDocId == null) {
+//       return;
+//     }
+
+//     final newTransaction = Transaction(
+//       DateTime.now().toString(), // Use a timestamp as a unique id
+//       title,
+//       amount,
+//       _selectedEventDocId!,
+//     );
+
+//     setState(() {
+//       _transactions.add(newTransaction);
+//       _calculateTotalSpent();
+//     });
+
+//     try {
+//       String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//       await FirebaseFirestore.instance.collection('transactions').add({
+//         'title': newTransaction.title,
+//         'amount': newTransaction.amount,
+//         'createdAt': Timestamp.now(),
+//         'email': userEmail,
+//         'eventType': _selectedEvent,
+//         'eventDocId': newTransaction.eventDocId,
+//       });
+
+//       if (_selectedEventDocId != null) {
+//         await _updateEventBudget(_selectedEventDocId!, newTransaction.amount);
+//       }
+//     } catch (error) {
+//       print("Error adding transaction: $error");
+//     }
+//   }
+
+//   Future<void> _updateEventBudget(
+//       String eventDocId, double transactionAmount) async {
+//     String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//     try {
+//       final eventDoc = await FirebaseFirestore.instance
+//           .collection('events')
+//           .doc(eventDocId)
+//           .get();
+
+//       final newBudget =
+//           (eventDoc.data()?['budget']?.toDouble() ?? 0.0) - transactionAmount;
+
+//       await FirebaseFirestore.instance
+//           .collection('events')
+//           .doc(eventDocId)
+//           .update({
+//         'budget': newBudget,
+//       });
+
+//       setState(() {
+//         _eventBudget = newBudget;
+//       });
+//     } catch (error) {
+//       print("Error updating event budget: $error");
+//     }
+//   }
+
+//   Future<void> _loadTransactions() async {
+//     if (_selectedEventDocId == null) return;
+
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     String userEmail = "me@me.com"; // Replace with dynamic user email
+
+//     FirebaseFirestore.instance
+//         .collection('transactions')
+//         .where('email', isEqualTo: userEmail)
+//         .where('eventType', isEqualTo: _selectedEvent)
+//         .where('eventDocId', isEqualTo: _selectedEventDocId)
+//         .snapshots()
+//         .listen((snapshot) {
+//       final List<Transaction> loadedTransactions = [];
+
+//       snapshot.docs.forEach((doc) {
+//         loadedTransactions.add(
+//           Transaction(
+//             doc.id, // Use Firestore document ID
+//             doc['title'],
+//             doc['amount'].toDouble(),
+//             doc['eventDocId'],
+//           ),
+//         );
+//       });
+
+//       setState(() {
+//         _transactions.clear();
+//         _transactions.addAll(loadedTransactions);
+//         _calculateTotalSpent();
+//         _isLoading = false;
+//       });
+//     });
+//   }
+
+//   Future<void> _deleteTransaction(String transactionId, double amount) async {
+//     try {
+//       await FirebaseFirestore.instance
+//           .collection('transactions')
+//           .doc(transactionId)
+//           .delete();
+
+//       setState(() {
+//         _transactions.removeWhere((tx) => tx.id == transactionId);
+//         _calculateTotalSpent();
+//         // Optionally, update the event budget if needed
+//       });
+//     } catch (error) {
+//       print("Error deleting transaction: $error");
+//     }
+//   }
+
+//   void _startAddNewTransaction(BuildContext ctx) {
+//     showModalBottomSheet(
+//       context: ctx,
+//       builder: (context) {
+//         return Padding(
+//           padding: EdgeInsets.all(10),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.end,
+//             children: [
+//               TextField(
+//                 controller: titleController,
+//                 decoration: InputDecoration(labelText: 'Title'),
+//               ),
+//               TextField(
+//                 controller: amountController,
+//                 decoration: InputDecoration(labelText: 'Amount'),
+//                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+//               ),
+//               SizedBox(height: 20),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   final title = titleController.text;
+//                   final amount = double.tryParse(amountController.text) ?? 0.0;
+
+//                   if (title.isEmpty ||
+//                       amount <= 0.0 ||
+//                       _selectedEvent == null) {
+//                     return;
+//                   }
+
+//                   _addTransaction(title, amount);
+//                   Navigator.of(ctx).pop();
+//                 },
+//                 child: Text('Add Transaction'),
+//               )
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Colors.red,
+//         title: Text('Budget Page'),
+//         centerTitle: true,
+//       ),
+//       body: BodyBackground(
+//         child: Stack(
+//           children: [
+//             Column(
+//               crossAxisAlignment: CrossAxisAlignment.stretch,
+//               children: <Widget>[
+//                 if (_isLoading && _events.isEmpty)
+//                   Center(
+//                     child: CircularProgressIndicator(),
+//                   ),
+//                 if (!_isLoading && _events.isNotEmpty)
+//                   DropdownButton<String>(
+//                     hint: Text('Select Event'),
+//                     value: _selectedEvent,
+//                     items: _events.map((event) {
+//                       return DropdownMenuItem<String>(
+//                         value: event,
+//                         child: Text(event),
+//                       );
+//                     }).toList(),
+//                     onChanged: (newValue) {
+//                       setState(() {
+//                         _selectedEvent = newValue;
+//                         if (newValue != null) {
+//                           _loadEventBudget(newValue); // Load event budget
+//                         }
+//                       });
+//                     },
+//                   ),
+//                 SizedBox(height: 20),
+//                 Card(
+//                   elevation: 5,
+//                   child: Container(
+//                     padding: EdgeInsets.all(10),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           'Total Spending: \$${_totalSpent.toStringAsFixed(2)}',
+//                           style: TextStyle(
+//                               fontSize: 20, fontWeight: FontWeight.bold),
+//                         ),
+//                         SizedBox(height: 10),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(height: 20),
+//                 Expanded(
+//                   child: ListView.builder(
+//                     itemCount: _transactions.length,
+//                     itemBuilder: (ctx, index) {
+//                       final tx = _transactions[index];
+//                       return ListTile(
+//                         title: Text(tx.title),
+//                         subtitle: Text('\$${tx.amount.toStringAsFixed(2)}'),
+//                         trailing: IconButton(
+//                           icon: Icon(Icons.delete),
+//                           onPressed: () => _showDeleteDialog(tx.id, tx.amount),
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             Positioned(
+//               bottom: 20,
+//               right: 20,
+//               child: FloatingActionButton(
+//                 child: Icon(Icons.add),
+//                 onPressed: () => _startAddNewTransaction(context),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   void _showDeleteDialog(String transactionId, double amount) {
+//     showDialog(
+//       context: context,
+//       builder: (ctx) {
+//         return AlertDialog(
+//           title: Text('Delete Transaction'),
+//           content: Text('Are you sure you want to delete this transaction?'),
+//           actions: [
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(ctx).pop();
+//               },
+//               child: Text('Cancel'),
+//             ),
+//             TextButton(
+//               onPressed: () async {
+//                 Navigator.of(ctx).pop();
+//                 await _deleteTransaction(transactionId, amount);
+//               },
+//               child: Text('Delete'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+
+//   void _calculateTotalSpent() {
+//     double total = 0.0;
+//     _transactions.forEach((tx) {
+//       total += tx.amount;
+//     });
+
+//     setState(() {
+//       _totalSpent = total;
+//     });
+//   }
+// }
+                                        ------------------Budget
