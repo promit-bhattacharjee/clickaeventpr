@@ -54,19 +54,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDJL-VMcbL0x22xC1Ssvi67ugh1SaWoi7U',
-    appId: '1:424282393858:android:a6b14c15acd3c3f0c7861b',
-    messagingSenderId: '424282393858',
-    projectId: 'jakir-31ddd',
-    storageBucket: 'jakir-31ddd.appspot.com',
+    apiKey: 'AIzaSyDPk2r67EEU3DT7f6JnBzppHDybatqFG7s',
+    appId: '1:202999160574:android:d387d7d902df862f180faf',
+    messagingSenderId: '202999160574',
+    projectId: 'click-52d8d',
+    storageBucket: 'click-52d8d.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCR7stH65YCTauEaxlJjYaizLOmNOvEvSQ',
-    appId: '1:424282393858:ios:95f19ea3e35f3587c7861b',
-    messagingSenderId: '424282393858',
-    projectId: 'jakir-31ddd',
-    storageBucket: 'jakir-31ddd.appspot.com',
+    apiKey: 'AIzaSyDs1r1KREEfRd-_5--rHIaFHZfNOH-aALg',
+    appId: '1:202999160574:ios:82bcd2eb4df336b6180faf',
+    messagingSenderId: '202999160574',
+    projectId: 'click-52d8d',
+    storageBucket: 'click-52d8d.appspot.com',
     iosBundleId: 'com.jakir.clickaeventpr',
   );
 

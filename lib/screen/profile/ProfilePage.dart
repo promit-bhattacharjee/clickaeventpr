@@ -4,7 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart'; // Import for Share
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../style/style.dart';
+import '../main manu/home.dart';
+
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -62,13 +67,13 @@ class _ProfilePageState extends State<ProfilePage>
         await prefs.setString('address', _addressController.text);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully!')),
+          const SnackBar(content: Text('Profile updated successfully!')),
         );
       }
     } catch (e) {
       print('Error saving user details: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile. Please try again.')),
+        const SnackBar(content: Text('Failed to update profile. Please try again.')),
       );
     }
   }
@@ -89,20 +94,20 @@ class _ProfilePageState extends State<ProfilePage>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Password Change'),
-          content: Text('Do you want to change your password?'),
+          title: const Text('Confirm Password Change'),
+          content: const Text('Do you want to change your password?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
           ],
         );
@@ -131,18 +136,28 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child: Text('Profile',
-                style: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w700))),
+        backgroundColor: colorRed,
+        centerTitle: true,
+        title: const Text(
+          "Profile",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 150,
               child: Stack(
                 fit: StackFit.loose,
@@ -151,7 +166,7 @@ class _ProfilePageState extends State<ProfilePage>
                     child: Container(
                       width: 100,
                       height: 100,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: ExactAssetImage('assets/images/as.png'),
@@ -166,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage>
                       right: 10,
                       child: GestureDetector(
                         onTap: () => setState(() => _isEditing = true),
-                        child: CircleAvatar(
+                        child: const CircleAvatar(
                           backgroundColor: Colors.redAccent,
                           radius: 14.0,
                           child:
@@ -182,17 +197,17 @@ class _ProfilePageState extends State<ProfilePage>
                 children: [
                   TextField(
                     controller: _nameController,
-                    decoration: InputDecoration(labelText: 'Name'),
+                    decoration: const InputDecoration(labelText: 'Name'),
                     enabled: _isEditing,
                   ),
                   TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Email ID'),
+                    decoration: const InputDecoration(labelText: 'Email ID'),
                     enabled: false, // Make email field read-only
                   ),
                   TextField(
                     controller: _addressController,
-                    decoration: InputDecoration(labelText: 'Address'),
+                    decoration: const InputDecoration(labelText: 'Address'),
                     enabled: _isEditing,
                   ),
                   if (_isEditing)
@@ -206,11 +221,11 @@ class _ProfilePageState extends State<ProfilePage>
                               _saveUserDetails();
                               setState(() => _isEditing = false);
                             },
-                            child: Text('Save'),
+                            child: const Text('Save'),
                           ),
                           ElevatedButton(
                             onPressed: () => setState(() => _isEditing = false),
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                           ),
                         ],
                       ),
@@ -220,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage>
                       padding: const EdgeInsets.only(top: 20.0),
                       child: ElevatedButton(
                         onPressed: _changePassword,
-                        child: Text('Change Password'),
+                        child: const Text('Change Password'),
                       ),
                     ),
                   if (!_isEditing)
@@ -228,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage>
                       padding: const EdgeInsets.only(top: 20.0),
                       child: ElevatedButton(
                         onPressed: _logout,
-                        child: Text('Logout'),
+                        child: const Text('Logout'),
                       ),
                     ),
                 ],
@@ -242,48 +257,50 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class ForgetPasswordScreen extends StatelessWidget {
+  const ForgetPasswordScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
 
-    Future<void> _resetPassword() async {
-      final String email = _emailController.text;
+    Future<void> resetPassword() async {
+      final String email = emailController.text;
       if (email.isNotEmpty) {
         try {
           await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Password reset email sent!')),
+            const SnackBar(content: Text('Password reset email sent!')),
           );
         } catch (e) {
           print('Error sending password reset email: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to send password reset email.')),
+            const SnackBar(content: Text('Failed to send password reset email.')),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please enter your email address.')),
+          const SnackBar(content: Text('Please enter your email address.')),
         );
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reset Password'),
+        title: const Text('Reset Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email ID'),
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email ID'),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _resetPassword,
-              child: Text('Send Reset Email'),
+              onPressed: resetPassword,
+              child: const Text('Send Reset Email'),
             ),
           ],
         ),

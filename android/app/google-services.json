@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "424282393858",
-    "project_id": "jakir-31ddd",
-    "storage_bucket": "jakir-31ddd.appspot.com"
+    "project_number": "202999160574",
+    "project_id": "click-52d8d",
+    "storage_bucket": "click-52d8d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:424282393858:android:a6b14c15acd3c3f0c7861b",
+        "mobilesdk_app_id": "1:202999160574:android:d387d7d902df862f180faf",
         "android_client_info": {
           "package_name": "com.jakir.clickaeventpr"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDJL-VMcbL0x22xC1Ssvi67ugh1SaWoi7U"
+          "current_key": "AIzaSyDPk2r67EEU3DT7f6JnBzppHDybatqFG7s"
         }
       ],
       "services": {

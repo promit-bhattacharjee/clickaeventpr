@@ -1,3 +1,4 @@
+import 'package:clickaeventpr/screen/main%20manu/calander.dart';
 import 'package:clickaeventpr/screen/main%20manu/searchPage.dart';
 import 'package:flutter/material.dart';
 
@@ -15,10 +16,10 @@ class Home extends StatefulWidget {
 
 int currentTab = 0;
 final List<Widget> screens = [
-  Deshbord(),
-  SearchPage(),
-  ProfilePage(),
-  Settings()
+  const Deshbord(),
+  const Calendar(),
+        ProfilePage(),
+  const Settings()
 ];
 
 final PageStorageBucket bucket = PageStorageBucket();
@@ -28,7 +29,7 @@ class _homeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Navbar(),
+      // drawer:  Navbar(),
       body: PageStorage(
         bucket: bucket,
         child: currentScreen,
@@ -41,7 +42,7 @@ class _homeState extends State<Home> {
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
-        child: Container(
+        child: SizedBox(
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,7 +54,7 @@ class _homeState extends State<Home> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = Deshbord();
+                        currentScreen = const Deshbord();
                         currentTab = 0;
                       });
                     },
@@ -75,17 +76,17 @@ class _homeState extends State<Home> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = SearchPage();
+                        currentScreen = const Calendar();
                         currentTab = 1;
                       });
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.search,
+                        Icon(Icons.calendar_today,
                             color: currentTab == 1 ? Colors.red : Colors.grey),
                         Text(
-                          'Search',
+                          'Event Calender',
                           style: TextStyle(
                               color:
                                   currentTab == 1 ? Colors.black : Colors.grey),
@@ -124,7 +125,7 @@ class _homeState extends State<Home> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = Settings();
+                        currentScreen = const Settings();
                         currentTab = 3;
                       });
                     },

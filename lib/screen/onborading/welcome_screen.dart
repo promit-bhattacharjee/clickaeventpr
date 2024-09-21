@@ -1,3 +1,5 @@
+import 'package:clickaeventpr/screen/onborading/login_screen.dart';
+import 'package:clickaeventpr/screen/onborading/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -48,7 +50,8 @@ class WelcomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 25, right: 25),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, "/registerScreen");
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => const RegistrationScreen()));
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -87,7 +90,8 @@ class WelcomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 25, right: 25),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, "/login");
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => const LoginScreen()));
                         },
                         child: Container(
                           decoration: BoxDecoration(

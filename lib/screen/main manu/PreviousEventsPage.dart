@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clickaeventpr/screen/main%20manu/home.dart';
 
 class PreviousEventsPage extends StatelessWidget {
-  const PreviousEventsPage({Key? key}) : super(key: key);
+  const PreviousEventsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class PreviousEventsPage extends StatelessWidget {
 }
 
 class PreviousEventsPageWidget extends StatefulWidget {
-  const PreviousEventsPageWidget({Key? key}) : super(key: key);
+  const PreviousEventsPageWidget({super.key});
 
   @override
   State<PreviousEventsPageWidget> createState() =>
@@ -32,7 +32,7 @@ class PreviousEventsPageWidget extends StatefulWidget {
 }
 
 class _PreviousEventsPageWidgetState extends State<PreviousEventsPageWidget> {
-  List<String> _selectedItems = [];
+  final List<String> _selectedItems = [];
   String _userEmail = '';
   bool _isLoading = false;
 
@@ -138,13 +138,13 @@ class _PreviousEventsPageWidgetState extends State<PreviousEventsPageWidget> {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Event: $eventTitle', style: pw.TextStyle(fontSize: 24)),
+            pw.Text('Event: $eventTitle', style: const pw.TextStyle(fontSize: 24)),
             pw.SizedBox(height: 20),
-            pw.Text('Event Details:', style: pw.TextStyle(fontSize: 18)),
+            pw.Text('Event Details:', style: const pw.TextStyle(fontSize: 18)),
             pw.Text('Date: ${eventDetails?['date'] ?? 'N/A'}'),
             pw.Text('Status: ${eventDetails?['status'] ?? 'N/A'}'),
             pw.SizedBox(height: 20),
-            pw.Text('Guests:', style: pw.TextStyle(fontSize: 18)),
+            pw.Text('Guests:', style: const pw.TextStyle(fontSize: 18)),
             ...guests.map((guest) => pw.Text(
                 'Guest: ${guest['name']}, Contact: ${guest['contact'] ?? 'N/A'}'))
           ],

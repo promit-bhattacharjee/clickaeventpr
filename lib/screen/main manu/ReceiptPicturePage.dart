@@ -1,3 +1,5 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -8,12 +10,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReceiptPicturePage extends StatefulWidget {
+  const ReceiptPicturePage({super.key});
+
   @override
   _ReceiptPicturePageState createState() => _ReceiptPicturePageState();
 }
 
 class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
-  List<File> _images = [];
+  final List<File> _images = [];
   String? _selectedEvent;
   String? _selectedTransaction;
   String? _selectedEventId;
@@ -77,7 +81,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
   Future<void> _pickImage() async {
     if (_images.length >= 2) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Maximum 2 images allowed')),
+        const SnackBar(content: Text('Maximum 2 images allowed')),
       );
       return;
     }
@@ -153,12 +157,12 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Receipt uploaded successfully')),
+        const SnackBar(content: Text('Receipt uploaded successfully')),
       );
     } catch (e) {
       print('Error uploading receipt: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading receipt')),
+        const SnackBar(content: Text('Error uploading receipt')),
       );
     }
   }
@@ -167,8 +171,21 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Receipt Picture'),
+        backgroundColor: colorRed,
         centerTitle: true,
+        title: const Text(
+          "Budget Tracker",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -178,7 +195,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
             // Event Dropdown
             DropdownButton<String>(
               isExpanded: true,
-              hint: Text('Select Event'),
+              hint: const Text('Select Event'),
               value: _selectedEvent,
               items: _events.map((event) {
                 return DropdownMenuItem<String>(
@@ -197,12 +214,12 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Transaction Dropdown
             DropdownButton<String>(
               isExpanded: true,
-              hint: Text('Select Transaction'),
+              hint: const Text('Select Transaction'),
               value: _selectedTransaction,
               items: _transactions.map((transaction) {
                 return DropdownMenuItem<String>(
@@ -220,7 +237,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Date and Time Picker
             ListTile(
@@ -229,10 +246,10 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                     ? 'Select Date and Time'
                     : DateFormat.yMMMd().add_jm().format(_selectedDateTime!),
               ),
-              trailing: Icon(Icons.calendar_today),
+              trailing: const Icon(Icons.calendar_today),
               onTap: _selectDateTime,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Image Previews
             Row(
@@ -240,7 +257,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                 return Stack(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
@@ -253,7 +270,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                       top: 0,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.cancel, color: Colors.red),
+                        icon: const Icon(Icons.cancel, color: Colors.red),
                         onPressed: () {
                           setState(() {
                             _images.remove(image);
@@ -270,11 +287,11 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
             if (_images.length < 2)
               ElevatedButton.icon(
                 onPressed: _pickImage,
-                icon: Icon(Icons.add_a_photo),
-                label: Text('Add Image'),
+                icon: const Icon(Icons.add_a_photo),
+                label: const Text('Add Image'),
               ),
 
-            Spacer(),
+            const Spacer(),
 
             // Submit Button
             ElevatedButton(
@@ -284,7 +301,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                     _selectedDateTime == null ||
                     _images.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please complete all fields')),
+                    const SnackBar(content: Text('Please complete all fields')),
                   );
                   return;
                 }
@@ -292,7 +309,7 @@ class _ReceiptPicturePageState extends State<ReceiptPicturePage> {
                 // Handle submission with event and transaction IDs
                 _uploadImages();
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),

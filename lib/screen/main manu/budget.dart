@@ -1,3 +1,5 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +15,8 @@ class Transaction {
 }
 
 class BudgetPage extends StatefulWidget {
+  const BudgetPage({super.key});
+
   @override
   _BudgetPageState createState() => _BudgetPageState();
 }
@@ -61,12 +65,12 @@ class _BudgetPageState extends State<BudgetPage> {
           .where('email', isEqualTo: email)
           .get();
       final List<Map<String, String>> events = [];
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         events.add({
           'id': doc.id, // Document ID
-          'name': doc.data()?['name'] ?? 'Unnamed Event', // Event name
+          'name': doc.data()['name'] ?? 'Unnamed Event', // Event name
         });
-      });
+      }
 
       setState(() {
         _events.addAll(events);
@@ -82,8 +86,9 @@ class _BudgetPageState extends State<BudgetPage> {
   }
 
   Future<void> _loadEventBudget(String eventDocId) async {
-    if (!_isEventLoaded || email == null)
+    if (!_isEventLoaded || email == null) {
       return; // Ensure events are loaded and email is available
+    }
 
     setState(() {
       _isLoading = true;
@@ -196,7 +201,7 @@ class _BudgetPageState extends State<BudgetPage> {
 
       final List<Transaction> loadedTransactions = [];
 
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         loadedTransactions.add(
           Transaction(
             doc.id, // Use Firestore document ID
@@ -205,7 +210,7 @@ class _BudgetPageState extends State<BudgetPage> {
             doc['eventDocId'],
           ),
         );
-      });
+      }
 
       setState(() {
         _transactions.clear();
@@ -278,19 +283,19 @@ class _BudgetPageState extends State<BudgetPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Edit Transaction'),
+        title: const Text('Edit Transaction'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
               readOnly: true,
             ),
             TextField(
               controller: amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(labelText: 'Amount'),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
           ],
         ),
@@ -299,7 +304,7 @@ class _BudgetPageState extends State<BudgetPage> {
             onPressed: () {
               Navigator.of(ctx).pop();
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -312,7 +317,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 amountController.clear();
               }
             },
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       ),
@@ -323,18 +328,18 @@ class _BudgetPageState extends State<BudgetPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Add Transaction'),
+        title: const Text('Add Transaction'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
             TextField(
               controller: amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(labelText: 'Amount'),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
           ],
         ),
@@ -343,7 +348,7 @@ class _BudgetPageState extends State<BudgetPage> {
             onPressed: () {
               Navigator.of(ctx).pop();
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -357,7 +362,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 amountController.clear();
               }
             },
-            child: Text('Add'),
+            child: const Text('Add'),
           ),
         ],
       ),
@@ -378,15 +383,30 @@ class _BudgetPageState extends State<BudgetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Budget Tracker'),
-      ),
-      body: BodyBackground(
-        child: Padding(
+        backgroundColor: colorRed,
+        centerTitle: true,
+        title: const Text(
+        "Budget Tracker",
+        style: TextStyle(color: Colors.white),
+
+    ),
+
+      leading: IconButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => const Home()));
+        },
+        icon: const Icon(Icons.arrow_back),
+      ),),
+      body:  Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              SizedBox(
+                height: 30,
+              ),
               DropdownButton<String>(
-                hint: Text('Select Event'),
+                hint: const Text('Select Event'),
                 value: _selectedEvent,
                 onChanged: (value) {
                   setState(() {
@@ -403,24 +423,24 @@ class _BudgetPageState extends State<BudgetPage> {
                   );
                 }).toList(),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Event Budget: $_eventBudget'),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Total Spent: $_totalSpent'),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _showAddTransactionDialog,
-                child: Text('Add Transaction'),
+                child: const Text('Add Transaction'),
               ),
               Expanded(
                 child: _isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
                         itemCount: _transactions.length,
                         itemBuilder: (ctx, index) {
                           final tx = _transactions[index];
                           return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8.0),
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: ListTile(
                               title: Text(tx.title),
                               subtitle:
@@ -429,12 +449,12 @@ class _BudgetPageState extends State<BudgetPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.edit),
+                                    icon: const Icon(Icons.edit),
                                     onPressed: () =>
                                         _showEditTransactionDialog(tx),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       _deleteTransaction(tx.id, tx.amount);
                                     },
@@ -449,7 +469,7 @@ class _BudgetPageState extends State<BudgetPage> {
             ],
           ),
         ),
-      ),
+
     );
   }
 }

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final String eventId;
   final String userEmail;
 
   const EventDetailsPage({
-    Key? key,
+    super.key,
     required this.eventId,
     required this.userEmail,
-  }) : super(key: key);
+  });
 
   @override
   _EventDetailsPageState createState() => _EventDetailsPageState();
@@ -60,9 +61,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           .where('eventDocId', isEqualTo: widget.eventId)
           .get();
 
-      final transactionData = transactionsSnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      final transactionData =
+          transactionsSnapshot.docs.map((doc) => doc.data()).toList();
 
       // Extract image URLs from JSON objects in transactions
       List<String> imageUrls = [];
@@ -93,9 +93,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           .get();
 
       setState(() {
-        _guests = guestsSnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
+        _guests = guestsSnapshot.docs.map((doc) => doc.data()).toList();
       });
     } catch (e) {
       setState(() {
@@ -140,7 +138,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Event Details
-            Text(
+            const Text(
               'Event Details',
               style: TextStyle(
                 fontSize: 20,
@@ -151,28 +149,30 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             const SizedBox(height: 8),
             Text(
               'Name: ${_eventDetails?['name'] ?? 'N/A'}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black54,
               ),
             ),
             Text(
               'Description: ${_eventDetails?['description'] ?? 'N/A'}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black54,
               ),
             ),
+            // Inside your build method
             Text(
-              'Date: ${_eventDetails?['date'] ?? 'N/A'}',
-              style: TextStyle(
+              'Date: ${_eventDetails != null && _eventDetails!['date'] is Timestamp ? DateFormat.yMMMMd().add_jm().format((_eventDetails!['date'] as Timestamp).toDate()) : 'N/A'}',
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black54,
               ),
             ),
+
             Text(
               'Location: ${_eventDetails?['location'] ?? 'N/A'}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black54,
               ),
@@ -180,7 +180,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             const SizedBox(height: 16),
 
             // Transactions
-            Text(
+            const Text(
               'Transactions',
               style: TextStyle(
                 fontSize: 20,
@@ -199,7 +199,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
             // Images Carousel
             if (_imageUrls.isNotEmpty) ...[
-              Text(
+              const Text(
                 'Images',
                 style: TextStyle(
                   fontSize: 20,
@@ -234,7 +234,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             ],
 
             // Guests
-            Text(
+            const Text(
               'Guests',
               style: TextStyle(
                 fontSize: 20,

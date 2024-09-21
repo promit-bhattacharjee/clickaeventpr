@@ -1,3 +1,5 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,15 +9,20 @@ void main() {
 }
 
 class EventApp extends StatelessWidget {
+  const EventApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: EventPage(),
     );
   }
 }
 
 class EventPage extends StatefulWidget {
+  const EventPage({super.key});
+
   @override
   _EventPageState createState() => _EventPageState();
 }
@@ -40,7 +47,7 @@ class _EventPageState extends State<EventPage> {
     final email = await _getUserEmail(); // Await the future to get the email
     if (email == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No user logged in.')),
+        const SnackBar(content: Text('No user logged in.')),
       );
       return;
     }
@@ -52,7 +59,7 @@ class _EventPageState extends State<EventPage> {
         _eventDescriptionController.text.isEmpty) {
       // Check if description is empty
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all fields.')),
+        const SnackBar(content: Text('Please fill all fields.')),
       );
       return;
     }
@@ -78,7 +85,7 @@ class _EventPageState extends State<EventPage> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Event added successfully!')),
+      const SnackBar(content: Text('Event added successfully!')),
     );
   }
 
@@ -107,10 +114,11 @@ class _EventPageState extends State<EventPage> {
       lastDate: DateTime(2101),
     );
 
-    if (picked != null && picked != _selectedDate)
+    if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
+    }
   }
 
   void _selectTime() async {
@@ -119,23 +127,29 @@ class _EventPageState extends State<EventPage> {
       initialTime: TimeOfDay.now(),
     );
 
-    if (picked != null && picked != _selectedTime)
+    if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
       });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Event'),
-        backgroundColor: Colors.red,
+        backgroundColor: colorRed,
         centerTitle: true,
-        elevation: 1,
+        title: const Text(
+          "Create Event",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
           },
           icon: const Icon(Icons.arrow_back),
         ),
@@ -144,30 +158,33 @@ class _EventPageState extends State<EventPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(
+              height: 30,
+            ),
             TextField(
               controller: _eventNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Event Name',
                 hintText: 'Enter event name',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _eventTypeController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Event Type',
                 hintText: 'Birthday, Wedding, etc.',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _eventDescriptionController, // New field
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Event Description',
                 hintText: 'Enter event description',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,11 +195,11 @@ class _EventPageState extends State<EventPage> {
                 ),
                 ElevatedButton(
                   onPressed: _selectDate,
-                  child: Text('Select Date'),
+                  child: const Text('Select Date'),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -193,16 +210,16 @@ class _EventPageState extends State<EventPage> {
                 ),
                 ElevatedButton(
                   onPressed: _selectTime,
-                  child: Text('Select Time'),
+                  child: const Text('Select Time'),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _addEvent,
-              child: Text('Add Event'),
+              child: const Text('Add Event'),
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
           ],
         ),
       ),

@@ -1,9 +1,13 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class ViewReceiptsPage extends StatefulWidget {
+  const ViewReceiptsPage({super.key});
+
   @override
   _ViewReceiptsPageState createState() => _ViewReceiptsPageState();
 }
@@ -63,7 +67,7 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
           .where('transactionId', isEqualTo: _selectedTransactionId)
           .snapshots();
     } else {
-      return Stream.empty();
+      return const Stream.empty();
     }
   }
 
@@ -71,17 +75,33 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('View Receipt Pictures'),
+        backgroundColor: colorRed,
         centerTitle: true,
+        title: const Text(
+          "View Receipt Pictures",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(
+              height: 30,
+            ),
             // Event Dropdown
             DropdownButton<String>(
               isExpanded: true,
-              hint: Text('Select Event'),
+              hint: const Text('Select Event'),
               value: _selectedEventId,
               items: _events.map((event) {
                 return DropdownMenuItem<String>(
@@ -100,13 +120,13 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Transaction Dropdown
             if (_selectedEventId != null)
               DropdownButton<String>(
                 isExpanded: true,
-                hint: Text('Select Transaction'),
+                hint: const Text('Select Transaction'),
                 value: _selectedTransactionId,
                 items: _transactions.map((transaction) {
                   return DropdownMenuItem<String>(
@@ -121,7 +141,7 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                 },
               ),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Receipts GridView
             Expanded(
@@ -129,11 +149,11 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                 stream: _fetchReceipts(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                           'No receipts found for the selected event and transaction.'),
                     );
@@ -143,7 +163,7 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
 
                   return GridView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,
@@ -167,13 +187,13 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                                     if (progress == null) {
                                       return child;
                                     } else {
-                                      return Center(
+                                      return const Center(
                                         child: CircularProgressIndicator(),
                                       );
                                     }
                                   },
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Center(
+                                    return const Center(
                                       child: Icon(Icons.error),
                                     );
                                   },
@@ -181,7 +201,7 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                                 )
                               : Container(
                                   color: Colors.grey,
-                                  child: Icon(Icons.receipt, size: 50),
+                                  child: const Icon(Icons.receipt, size: 50),
                                 ),
                         ),
                       );
@@ -217,20 +237,20 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
               children: [
                 Text(
                   'Event: $event',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   'Transaction: $transaction',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 if (dateTime != null)
                   Text(
                     'Date: ${DateFormat.yMMMd().add_jm().format(dateTime)}',
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 if (imageUrls.isNotEmpty)
                   ...imageUrls.map((imageUrl) {
                     return Padding(
@@ -241,26 +261,26 @@ class _ViewReceiptsPageState extends State<ViewReceiptsPage> {
                           if (progress == null) {
                             return child;
                           } else {
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator(),
                             );
                           }
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Center(
+                          return const Center(
                             child: Icon(Icons.error),
                           );
                         },
                         fit: BoxFit.cover,
                       ),
                     );
-                  }).toList(),
-                SizedBox(height: 16),
+                  }),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             ),

@@ -29,7 +29,7 @@ class _SettingsState extends State<Settings> {
        ),
      ) ,
       body: Container(
-        padding: EdgeInsets.only(left: 16,top: 25,right: 16),
+        padding: const EdgeInsets.only(left: 16,top: 25,right: 16),
         child: ListView(
           children: const [
             Text("Settings",style: TextStyle(fontSize: 25,fontWeight: FontWeight.w500,color: Colors.black)),

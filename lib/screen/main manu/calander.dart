@@ -1,4 +1,4 @@
-import 'package:clickaeventpr/screen/main%20manu/home.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -173,29 +173,27 @@ class _CalendarState extends State<Calendar> {
             width: 5,
             height: 5,
             margin: const EdgeInsets.symmetric(vertical: 4.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.red,
               shape: BoxShape.circle,
             ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Event Calendar"),
+        title: const Text("Event Calendar",style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.red,
         centerTitle: true,
         elevation: 1,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (BuildContext context) => Home()));
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
+        // leading: IconButton(
+        //   onPressed: () {
+        //   },
+        //   icon: const Icon(Icons.arrow_back),
+        // ),
       ),
       body: Column(
         children: [

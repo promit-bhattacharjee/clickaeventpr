@@ -16,7 +16,7 @@ class Navbar extends StatelessWidget{
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-              accountName: Text("Jakir Hossen"), accountEmail: Text("Jhbjakir@gmail.com"),
+              accountName: const Text("Jakir Hossen"), accountEmail: const Text("Jhbjakir@gmail.com"),
 
           currentAccountPicture: CircleAvatar(
             child: ClipOval(
@@ -27,50 +27,50 @@ class Navbar extends StatelessWidget{
               ),
             ),
           ) ,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color:colorRed
             ),
 
            ),
           ListTile(
-            leading:Icon(Icons.favorite) ,
-            title:Text("Favorite") ,
+            leading:const Icon(Icons.favorite) ,
+            title:const Text("Favorite") ,
             onTap: (){} ,
           ), ListTile(
-            leading:Icon(Icons.people) ,
-            title:Text("Friends") ,
+            leading:const Icon(Icons.people) ,
+            title:const Text("Friends") ,
             onTap: (){} ,
           ), ListTile(
-            leading:Icon(Icons.share) ,
-            title:Text("Share") ,
+            leading:const Icon(Icons.share) ,
+            title:const Text("Share") ,
             onTap: (){} ,
           ), ListTile(
-            leading:Icon(Icons.notifications) ,
-            title:Text("Request") ,
+            leading:const Icon(Icons.notifications) ,
+            title:const Text("Request") ,
             trailing: ClipOval(
               child: Container(
                 color: Colors.red,
                 width: 20,
                 height: 20,
-                child: Center(child: Text("10",style: TextStyle(color: Colors.white,fontSize: 12),)),
+                child: const Center(child: Text("10",style: TextStyle(color: Colors.white,fontSize: 12),)),
               ),
             ),
             onTap: (){} ,
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading:Icon(Icons.settings) ,
-            title:Text("Settings") ,
+            leading:const Icon(Icons.settings) ,
+            title:const Text("Settings") ,
             onTap: (){} ,
           ), ListTile(
-            leading:Icon(Icons.file_copy) ,
-            title:Text("Policies") ,
+            leading:const Icon(Icons.file_copy) ,
+            title:const Text("Policies") ,
             onTap: (){} ,
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading:Icon(Icons.exit_to_app) ,
-            title:Text("Log Out") ,
+            leading:const Icon(Icons.exit_to_app) ,
+            title:const Text("Log Out") ,
             onTap: (){
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) =>LoginScreen()));

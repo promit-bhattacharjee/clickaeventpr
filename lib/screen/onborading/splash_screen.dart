@@ -14,7 +14,7 @@ import '../widgets/bodyBackground.dart';
 
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -25,13 +25,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   changeScreen() {
     Future.delayed(const Duration(seconds: 3), () {
-      auth.authStateChanges().listen((User? user) {
-        if (user == null && mounted) {
-          Get.to(() => const WelcomeScreen());
-        } else {
-          Get.to(() => const Home());
-        }
-      });
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+      // auth.authStateChanges().listen((User? user) {
+      //   if (user == null && mounted) {
+      //     Get.to(() => const WelcomeScreen());
+      //   } else {
+      //     Get.to(() => const Home());
+      //   }
+      // });
     });
   }
 

@@ -21,7 +21,7 @@ class _ShareState extends State<Share> {
         child: ElevatedButton(
           onPressed: () async{
            await Share.share('Share');
-          }, child: Text('Share App'),
+          }, child: const Text('Share App'),
         ),
       ),
     );

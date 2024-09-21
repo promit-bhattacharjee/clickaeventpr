@@ -52,17 +52,17 @@ TextStyle Head6Text(textColor){
 InputDecoration AppInputDecoration(label){
   return  InputDecoration(
     focusedBorder: const OutlineInputBorder(
-      borderSide: const BorderSide(color: colorRed,width: 1),
+      borderSide: BorderSide(color: colorRed,width: 1),
     ),
     fillColor: colorWhite,
     filled: true,
 
-    contentPadding: EdgeInsets.fromLTRB(20, 10, 10, 20),
+    contentPadding: const EdgeInsets.fromLTRB(20, 10, 10, 20),
 
     enabledBorder: const OutlineInputBorder(
-      borderSide: const BorderSide(color:  colorRed,width: 0.0),
+      borderSide: BorderSide(color:  colorRed,width: 0.0),
     ),
-    border:OutlineInputBorder(),
+    border:const OutlineInputBorder(),
     labelText: label
   );
 }
@@ -71,7 +71,7 @@ DecoratedBox AppDropDownStyle(child){
   return DecoratedBox(
       decoration: BoxDecoration(color:Colors.white, border: Border.all(color: Colors.white, width:1), borderRadius: BorderRadius.circular(4),),
       child:Padding(
-          padding: EdgeInsets.only(left:30, right:30),
+          padding: const EdgeInsets.only(left:30, right:30),
           child:child
       )
   );
@@ -108,7 +108,7 @@ ButtonStyle AppStatusButtonStyle(/*btnColor*/){
 
 
 TextStyle ButtonTextStyle(){
-  return TextStyle(
+  return const TextStyle(
       fontSize: 14,
       fontFamily: 'poppins',
       fontWeight: FontWeight.w400
@@ -129,13 +129,13 @@ Ink SuccessButtonChild(String ButtonText){
 Container StatusChild(statusText,statusColor){
   return  Container(
     alignment: Alignment.center,
-    child:Text(statusText,style: TextStyle(color: colorWhite,fontSize: 10,fontWeight: FontWeight.w400)),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20),
       color: statusColor,
     ),
     height: 20,
     width: 60,
+    child:Text(statusText,style: TextStyle(color: colorWhite,fontSize: 10,fontWeight: FontWeight.w400)),
   );
 }
 

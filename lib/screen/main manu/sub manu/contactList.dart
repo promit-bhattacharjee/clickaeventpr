@@ -3,7 +3,7 @@ import 'package:clickaeventpr/screen/main%20manu/home.dart';
 import 'package:flutter/material.dart';
 
 class contactList extends StatefulWidget {
-  const contactList({Key? key}) : super(key: key);
+  const contactList({super.key});
 
   @override
   State<contactList> createState() => _HomePageState();

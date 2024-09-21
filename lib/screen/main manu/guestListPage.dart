@@ -1,8 +1,12 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GuestListPage extends StatefulWidget {
+  const GuestListPage({super.key});
+
   @override
   _GuestListPageState createState() => _GuestListPageState();
 }
@@ -41,11 +45,11 @@ class _GuestListPageState extends State<GuestListPage> {
 
       final Map<String, String> events = {};
 
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         if (doc['name'] != null) {
           events[doc['name']] = doc.id;
         }
-      });
+      }
 
       setState(() {
         _events.clear();
@@ -65,17 +69,31 @@ class _GuestListPageState extends State<GuestListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Guest List'),
+        backgroundColor: colorRed,
         centerTitle: true,
+        title: const Text(
+          "Guest List",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Column(
+
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           if (_isLoadingEvents)
-            Center(child: CircularProgressIndicator())
+            const Center(child: CircularProgressIndicator())
           else if (_events.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child:
                   Text('No active events found.', textAlign: TextAlign.center),
             )
@@ -84,7 +102,7 @@ class _GuestListPageState extends State<GuestListPage> {
               padding: const EdgeInsets.all(16.0),
               child: DropdownButton<String>(
                 isExpanded: true,
-                hint: Text('Select Event'),
+                hint: const Text('Select Event'),
                 value: _selectedEvent,
                 items: _events.map((event) {
                   return DropdownMenuItem<String>(
@@ -100,8 +118,8 @@ class _GuestListPageState extends State<GuestListPage> {
                 },
               ),
             ),
-          SizedBox(height: 20),
-          Container(
+          const SizedBox(height: 20),
+          SizedBox(
             height: 60,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -116,6 +134,11 @@ class _GuestListPageState extends State<GuestListPage> {
                           _selectedStatus = status;
                         });
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _selectedStatus == status
+                            ? Colors.blue
+                            : Colors.grey[300],
+                      ),
                       child: Text(
                         '${status.capitalize()}',
                         style: TextStyle(
@@ -124,18 +147,13 @@ class _GuestListPageState extends State<GuestListPage> {
                               : Colors.black,
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _selectedStatus == status
-                            ? Colors.blue
-                            : Colors.grey[300],
-                      ),
                     ),
                   );
                 }).toList(),
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _selectedEvent == null
@@ -150,11 +168,11 @@ class _GuestListPageState extends State<GuestListPage> {
                       .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'No guests found for the selected event and status.',
                       style: TextStyle(fontSize: 16),
@@ -188,7 +206,7 @@ class _GuestListPageState extends State<GuestListPage> {
                             child: IgnorePointer(
                               child: Text(
                                 status.capitalize(),
-                                style: TextStyle(color: Colors.grey),
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ),
                           );
@@ -197,7 +215,7 @@ class _GuestListPageState extends State<GuestListPage> {
                           value: status,
                           child: Text(
                             status.capitalize(),
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         );
                       }).toList(),
@@ -232,7 +250,7 @@ class _GuestListPageState extends State<GuestListPage> {
 
 extension StringCasingExtension on String {
   String capitalize() {
-    if (this.isEmpty) return '';
-    return this[0].toUpperCase() + this.substring(1);
+    if (isEmpty) return '';
+    return this[0].toUpperCase() + substring(1);
   }
 }

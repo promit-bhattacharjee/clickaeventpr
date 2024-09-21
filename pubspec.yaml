@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0-279.0.dev <4.0.0'
+  sdk: '>=3.4.0-279.0.dev <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -58,10 +58,10 @@ dependencies:
   carousel_slider: ^5.0.0
   image_picker: ^0.8.6
   intl: ^0.19.0
-  get: ^4.6.6
+  get: ^4.6.5
   syncfusion_flutter_calendar: ^26.1.40+1
   pdf: ^3.11.1
-  path_provider: ^2.1.4
+  path_provider: ^2.0.11
   cached_network_image: ^3.4.0
   date_format: ^2.0.9
   appcheck: ^1.5.2

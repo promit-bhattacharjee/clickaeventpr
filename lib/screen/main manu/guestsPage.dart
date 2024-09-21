@@ -1,3 +1,5 @@
+import 'package:clickaeventpr/screen/main%20manu/home.dart';
+import 'package:clickaeventpr/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,11 +49,11 @@ class _GuestsState extends State<Guests> {
 
       final List<Map<String, String>> events = [];
 
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         if (doc['type'] != null) {
           events.add({'id': doc.id, 'name': doc['name'], 'type': doc['type']});
         }
-      });
+      }
 
       setState(() {
         _events.addAll(events);
@@ -74,7 +76,7 @@ class _GuestsState extends State<Guests> {
     try {
       if (_userEmail == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('User email not found.'),
           ),
         );
@@ -101,14 +103,14 @@ class _GuestsState extends State<Guests> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Guest added successfully!'),
         ),
       );
     } catch (e) {
       print('Error adding guest: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to add guest. Please try again.'),
         ),
       );
@@ -119,21 +121,32 @@ class _GuestsState extends State<Guests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        title: Text('Add Guest'),
+        backgroundColor: colorRed,
         centerTitle: true,
+        title: const Text(
+          "Add Guest",
+          style: TextStyle(color: Colors.white),
+
+        ),
+
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const Home()));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
-      body: BodyBackground(
-        child: Padding(
+      body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: _isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : Form(
                   key: _formKey,
                   child: ListView(
                     children: <Widget>[
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(labelText: 'Select Event'),
+                        decoration: const InputDecoration(labelText: 'Select Event'),
                         value: _selectedEvent,
                         items: _events.map((event) {
                           return DropdownMenuItem<String>(
@@ -143,10 +156,10 @@ class _GuestsState extends State<Guests> {
                               children: [
                                 Text(event['name']!,
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 4),
+                                        const TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(width: 4),
                                 Text(
-                                  "[" + event['type']!,
+                                  "[${event['type']!}",
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.grey[600]),
                                 ),
@@ -166,9 +179,9 @@ class _GuestsState extends State<Guests> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'Guest Name'),
+                        decoration: const InputDecoration(labelText: 'Guest Name'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the guest\'s name';
@@ -179,10 +192,10 @@ class _GuestsState extends State<Guests> {
                           _guestName = value;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextFormField(
                         decoration:
-                            InputDecoration(labelText: 'Contact Number'),
+                            const InputDecoration(labelText: 'Contact Number'),
                         keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -194,9 +207,9 @@ class _GuestsState extends State<Guests> {
                           _contactNumber = value;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'Address'),
+                        decoration: const InputDecoration(labelText: 'Address'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the address';
@@ -207,15 +220,15 @@ class _GuestsState extends State<Guests> {
                           _address = value;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: _submitForm,
-                        child: Text('Add Guest'),
+                        child: const Text('Add Guest'),
                       ),
                     ],
                   ),
                 ),
-        ),
+
       ),
     );
   }

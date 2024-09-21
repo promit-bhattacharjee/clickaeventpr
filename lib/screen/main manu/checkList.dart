@@ -1,6 +1,7 @@
 import 'package:clickaeventpr/screen/main%20manu/EventDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -8,8 +9,10 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clickaeventpr/screen/main%20manu/home.dart';
 
+import '../../style/style.dart';
+
 class CheckList extends StatelessWidget {
-  const CheckList({Key? key}) : super(key: key);
+  const CheckList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +27,14 @@ class CheckList extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> _selectedItems = [];
+  final List<String> _selectedItems = [];
   String _userEmail = '';
   bool _isLoading = false;
 
@@ -137,13 +140,14 @@ class _HomePageState extends State<HomePage> {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Event: $eventTitle', style: pw.TextStyle(fontSize: 24)),
+            pw.Text('Event: $eventTitle',
+                style: const pw.TextStyle(fontSize: 24)),
             pw.SizedBox(height: 20),
-            pw.Text('Event Details:', style: pw.TextStyle(fontSize: 18)),
+            pw.Text('Event Details:', style: const pw.TextStyle(fontSize: 18)),
             pw.Text('Date: ${eventDetails?['date'] ?? 'N/A'}'),
             pw.Text('Status: ${eventDetails?['status'] ?? 'N/A'}'),
             pw.SizedBox(height: 20),
-            pw.Text('Guests:', style: pw.TextStyle(fontSize: 18)),
+            pw.Text('Guests:', style: const pw.TextStyle(fontSize: 18)),
             ...guests.map((guest) => pw.Text(
                 'Guest: ${guest['name']}, Contact: ${guest['contact'] ?? 'N/A'}'))
           ],
@@ -190,14 +194,18 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+// ...
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ClickAEvent'),
-        backgroundColor: Colors.red,
+        backgroundColor: colorRed,
         centerTitle: true,
-        elevation: 1,
+        title: const Text(
+          "clickAEvent",
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -235,6 +243,14 @@ class _HomePageState extends State<HomePage> {
                             final event = events[index];
                             final eventId = event['docId'];
 
+                            // Convert Timestamp to DateTime
+                            DateTime eventDateTime =
+                                (event['date'] as Timestamp).toDate();
+                            String formattedDate =
+                                DateFormat.yMMMd().format(eventDateTime);
+                            String formattedTime =
+                                DateFormat.jm().format(eventDateTime);
+
                             return Card(
                               elevation: 3,
                               margin: const EdgeInsets.symmetric(
@@ -242,8 +258,12 @@ class _HomePageState extends State<HomePage> {
                               child: ListTile(
                                 title: Text(event['name'] ?? 'Unnamed Event'),
                                 subtitle: Text(
-                                    'Description: ${event['description'] ?? 'No description'}\nType: ${event['type'] ?? 'Unknown'}'),
+                                  'Description: ${event['description'] ?? 'No description'}\n'
+                                  'Type: ${event['type'] ?? 'Unknown'}\n'
+                                  'Date: $formattedDate, \nTime: $formattedTime',
+                                ),
                                 onTap: () {
+                                  print("date:   " + event['date'].toString());
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

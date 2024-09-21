@@ -25,7 +25,7 @@ class _DeshbordState extends State<Deshbord> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Navbar(),
+      // drawer:  Navbar(),
       appBar: AppBar(
         backgroundColor: colorRed,
         centerTitle: true,
@@ -51,39 +51,39 @@ class _DeshbordState extends State<Deshbord> {
             mainAxisExtent: 150,
           ),
           children: [
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                  return Calendar();
-                }));
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)]),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset(
-                        "assets/images/calander.png",
-                        width: 50,
-                        height: 50,
-                      ),
-                      const Text(
-                        "Calendar",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w600),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            //       return const Calendar();
+            //     }));
+            //   },
+            //   child: Container(
+            //     decoration: const BoxDecoration(
+            //         color: Colors.white,
+            //         borderRadius: BorderRadius.all(
+            //           Radius.circular(10),
+            //         ),
+            //         boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)]),
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8),
+            //       child: Column(
+            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //         children: [
+            //           Image.asset(
+            //             "assets/images/calander.png",
+            //             width: 50,
+            //             height: 50,
+            //           ),
+            //           const Text(
+            //             "Calendar",
+            //             style: TextStyle(
+            //                 fontSize: 20, fontWeight: FontWeight.w600),
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
             InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) {
@@ -169,12 +169,12 @@ class _DeshbordState extends State<Deshbord> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.asset(
-                        "assets/images/budget.png",
+                        "assets/images/budget_tracker.png",
                         width: 60,
                         height: 60,
                       ),
                       const Text(
-                        "ReceiptPicturePage",
+                        "Budget Tracker",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                       )
@@ -235,12 +235,12 @@ class _DeshbordState extends State<Deshbord> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.asset(
-                        "assets/images/event.png",
+                        "assets/images/reception.jpg",
                         width: 60,
                         height: 60,
                       ),
                       const Text(
-                        "ViewReceiptsPage",
+                        "reception",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                       )
@@ -268,12 +268,12 @@ class _DeshbordState extends State<Deshbord> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.asset(
-                        "assets/images/contactList.png",
+                        "assets/images/previous_events.png",
                         width: 50,
                         height: 50,
                       ),
                       const Text(
-                        "Privious",
+                        "previous events",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                       )
@@ -301,7 +301,7 @@ class _DeshbordState extends State<Deshbord> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.asset(
-                        "assets/images/guests.png",
+                        "assets/images/Guest.png",
                         width: 50,
                         height: 50,
                       ),
@@ -339,7 +339,7 @@ class _DeshbordState extends State<Deshbord> {
                         height: 50,
                       ),
                       const Text(
-                        "Guests list",
+                        "Add Guest",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                       )
